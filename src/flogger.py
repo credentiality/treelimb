@@ -222,8 +222,22 @@ def get_logger(name=None, include_git=False, auto_abort_trace=True, to_file=True
         # Log file location if logging to file
         if to_file:
             logger.info(f"Logging to {log_file}")
+            # Store log file path as an attribute for retrieval
+            logger._log_file_path = log_file
     
     return logger
+
+
+def get_log_file(logger):
+    """Get the active log file path for a logger, if any.
+    
+    Args:
+        logger: Logger instance created with get_logger()
+    
+    Returns:
+        Path object of log file, or None if not logging to file
+    """
+    return getattr(logger, '_log_file_path', None)
 
 
 if __name__ == "__main__":
