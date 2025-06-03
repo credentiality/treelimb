@@ -24,3 +24,11 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Project planning (development only)
+PROJECT_PLAN.md

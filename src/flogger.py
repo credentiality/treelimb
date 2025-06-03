@@ -37,8 +37,16 @@ def _get_program_name():
     return program_name if program_name else "python"
 
 
-def _get_log_dir(app_name="flogger"):
-    """Get platform-appropriate log directory that persists after program exit."""
+def _get_log_dir(app_name="flogger", custom_dir=None):
+    """Get platform-appropriate log directory that persists after program exit.
+    
+    Args:
+        app_name: Application name for default directory structure
+        custom_dir: Custom directory path to use instead of platform defaults
+    """
+    if custom_dir:
+        return Path(custom_dir)
+    
     if sys.platform == "win32":
         # Windows: LOCALAPPDATA\AppName\logs
         local_appdata = os.environ.get("LOCALAPPDATA")
@@ -172,7 +180,7 @@ def die(logger, message, *args):
     sys.exit(1)
 
 
-def get_logger(name=None, include_git=False, auto_abort_trace=True, to_file=True, to_stderr=True):
+def get_logger(name=None, include_git=False, auto_abort_trace=True, to_file=True, to_stderr=True, log_dir=None):
     """Get a logger with structured formatting.
     
     Args:
@@ -181,6 +189,7 @@ def get_logger(name=None, include_git=False, auto_abort_trace=True, to_file=True
         auto_abort_trace: Enable automatic stack traces on abort signals
         to_file: Enable file output to platform-appropriate log directory
         to_stderr: Output to stderr (can be combined with to_file)
+        log_dir: Custom directory for log files (overrides platform defaults)
     """
     logger = logging.getLogger(name)
     
@@ -190,9 +199,9 @@ def get_logger(name=None, include_git=False, auto_abort_trace=True, to_file=True
         
         if to_file:
             # Create file handler
-            log_dir = _get_log_dir()
-            log_dir.mkdir(parents=True, exist_ok=True)
-            log_file = log_dir / _get_log_filename()
+            log_directory = _get_log_dir(custom_dir=log_dir)
+            log_directory.mkdir(parents=True, exist_ok=True)
+            log_file = log_directory / _get_log_filename()
             
             file_handler = logging.FileHandler(log_file)
             file_handler.setFormatter(formatter)
@@ -248,9 +257,10 @@ if __name__ == "__main__":
     parser.add_argument("--level", choices=["debug", "info", "warning", "error", "critical"], 
                        default="info", help="Log level")
     parser.add_argument("--git", action="store_true", help="Include git commit in startup log")
+    parser.add_argument("--log-dir", help="Custom directory for log files")
     
     args = parser.parse_args()
     
-    logger = get_logger("cli", include_git=args.git)
+    logger = get_logger("cli", include_git=args.git, log_dir=args.log_dir)
     level_func = getattr(logger, args.level)
     level_func(args.message)
