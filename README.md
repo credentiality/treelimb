@@ -1,11 +1,11 @@
 # flogger
 
-Adds some necessary basics to Python standard logging.  Loosely inspired by Google's glog.
+Sets up Python standard logging with some essentials.  Loosely inspired by Google's glog.
 
 ## Example Output
 
 ```
-I2025-05-30 14:32:15.123-0700 0 example.py:42] Starting: pid=12345 modified=2025-05-30 14:30:12 python=3.11.2 example.py
+I2025-05-30 14:32:15.123-0700 0 example.py:42] Starting: pid=12345 modified=2025-05-30 14:30:12 python=3.11.2 commit=f38ea87 example.py
 I2025-05-30 14:32:15.124-0700 0 example.py:42] Logging to /home/user/.local/state/flogger/example.20250530-143215.log
 I2025-05-30 14:32:15.125-0700 0 example.py:15] Processing user data
 W2025-05-30 14:32:15.126-0700 0 example.py:18] Invalid input detected
@@ -18,7 +18,7 @@ Stack trace:
 
 ## Features
 
-* **No external dependencies** - Uses only Python standard library
+* **No external dependencies**
 * **Logs program metadata** - On startup, logs git commit, modification time, Python version, and command line
 * **Backtraces on abort** - Automatic stack traces when program receives SIGTERM, SIGINT, or SIGQUIT
 * **File:line and thread ID** - Shows source location and thread (0 for main thread)
@@ -57,7 +57,7 @@ import flogger
 logger = flogger.get_logger()
 logger.info("Application started")
 
-# Custom log directory
+# Or use a custom log directory
 logger = flogger.get_logger(log_dir="/var/log/myapp")
 logger.warning("This is a warning")
 
