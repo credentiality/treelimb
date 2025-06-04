@@ -17,8 +17,12 @@ from pathlib import Path
 __version__ = "0.1.0"
 
 
-def _get_program_name():
-    """Get the program name from sys.argv, handling various launch methods."""
+def _get_program_name(full_path=False):
+    """Get the program name from sys.argv, handling various launch methods.
+    
+    Args:
+        full_path: If True, return full path for regular scripts instead of just stem
+    """
     if not sys.argv or not sys.argv[0]:
         return "python"
     
@@ -32,12 +36,15 @@ def _get_program_name():
     elif script_path.startswith("-"):
         return "python"
     
+    if full_path:
+        return script_path
+    
     # Extract basename and remove .py extension
     program_name = Path(script_path).stem
     return program_name if program_name else "python"
 
 
-def _get_log_dir(app_name="flogger", custom_dir=None):
+def _get_log_dir(app_name="treelimb", custom_dir=None):
     """Get platform-appropriate log directory that persists after program exit.
     
     Args:
@@ -145,7 +152,7 @@ def _log_program_start(logger, include_git=False):
             pass
     
     # Add command line last (expandable for copy/paste)
-    program_name = _get_program_name()
+    program_name = _get_program_name(full_path=True)
     cmd_parts = [program_name] + sys.argv[1:]
     cmd_str = " ".join(f'"{arg}"' if " " in arg else arg for arg in cmd_parts)
     
@@ -252,7 +259,7 @@ def get_log_file(logger):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Test flogger formatting")
+    parser = argparse.ArgumentParser(description="Test treelimb formatting")
     parser.add_argument("message", nargs="?", default="hello, world", help="Message to log")
     parser.add_argument("--level", choices=["debug", "info", "warning", "error", "critical"], 
                        default="info", help="Log level")
