@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-A formatted logging library with structured output and automatic backtraces.
+Sets up Python standard logging with some essentials.  Loosely inspired by Google's glog.
 """
 
 import logging
