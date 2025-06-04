@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Sets up Python standard logging with some essentials.  Loosely inspired by Google's glog.
+See README.md for examples.
 """
 
 import logging
@@ -259,7 +260,7 @@ def get_log_file(logger):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Test treelimb formatting")
+    parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("message", nargs="?", default="hello, world", help="Message to log")
     parser.add_argument("--level", choices=["debug", "info", "warning", "error", "critical"], 
                        default="info", help="Log level")
